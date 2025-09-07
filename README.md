@@ -68,10 +68,4 @@ This application is a virtual pill splitter tool that allows users to:
 - Click and hold on a pill
 - Drag to desired location
 
-### Performance Optimizations
-
-- Implement React.memo
-- Virtual scrolling for large numbers of pills
-- Canvas rendering for performance improvements
-
 **Made with ❤️ using React + TypeScript + Tailwind CSS**
