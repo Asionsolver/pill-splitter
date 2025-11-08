@@ -1,5 +1,5 @@
-import React, { useState, useRef } from "react";
-
+import { useState, useRef } from "react";
+import { MousePointerSquareDashed, Scissors, HelpCircle } from "lucide-react";
 type Corners = { tl: number; tr: number; br: number; bl: number };
 
 type Pill = {
@@ -28,6 +28,8 @@ export default function PillSplitter() {
   const [drawColor, setDrawColor] = useState<string>("");
   const containerRef = useRef<HTMLDivElement>(null);
 
+  const [showHelp, setShowHelp] = useState(false);
+
   // Refs to avoid click-after-drag split
   const movedWhileDraggingRef = useRef<boolean>(false);
   const suppressClickRef = useRef<boolean>(false);
@@ -44,6 +46,7 @@ export default function PillSplitter() {
     setIsDrawing(true);
     setStartPos({ x: e.clientX, y: e.clientY });
     setDrawColor(getRandomColor());
+    setShowHelp(false);
   };
 
   const handleMouseDownPill = (e: React.MouseEvent, pillId: number) => {
@@ -294,6 +297,76 @@ export default function PillSplitter() {
       onMouseUp={handleMouseUp}
       onClick={handleSplitClick}
     >
+      {!pills.length && (
+        <div
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 
+    text-center px-10 py-8 rounded-3xl
+    bg-white/30 backdrop-blur-2xl border border-white/20 shadow-[0_8px_40px_rgba(0,0,0,0.15)] 
+    animate-fadeIn space-y-4 max-w-sm"
+        >
+          {/* Glowing gradient ring */}
+          <div className="absolute inset-0 -z-10 rounded-3xl bg-gradient-to-br from-blue-400/20 via-purple-400/20 to-pink-400/20 blur-xl"></div>
+
+          <MousePointerSquareDashed className="mx-auto text-blue-500 w-12 h-12 mb-2 animate-pulse" />
+
+          <h2 className="text-2xl font-semibold text-gray-800 tracking-tight">
+            Create Your First Pill
+          </h2>
+
+          <p className="text-gray-600 text-sm leading-relaxed">
+            <span className="font-medium text-blue-600">Click & drag</span> to
+            draw a pill.
+            <br />
+            <span className="font-medium text-green-600">Click</span> to split
+            or move pills.
+          </p>
+
+          <div className="flex justify-center items-center gap-2 text-xs text-gray-500 italic mt-2">
+            <Scissors size={14} className="text-gray-400" />
+            Min pill: {MIN_PILL}px | Min part: {MIN_PART}px
+          </div>
+        </div>
+      )}
+      {pills.length > 0 && (
+        <div className="absolute top-4 right-4 z-[99999]">
+          <button
+            onClick={() => setShowHelp((prev) => !prev)}
+            className="p-2 bg-white/70 hover:bg-white rounded-full shadow-md border border-gray-200 backdrop-blur-md transition-all"
+          >
+            <HelpCircle
+              className={`w-5 h-5 text-gray-700 transition-transform ${
+                showHelp ? "rotate-360 duration-300" : ""
+              }`}
+            />
+          </button>
+
+          {/* 🧠 Floating help card */}
+          {showHelp && (
+            <div
+              className="absolute right-0 mt-3 w-64 bg-white/90 backdrop-blur-xl border border-gray-200 rounded-xl shadow-xl p-4 text-sm text-gray-700 animate-fadeIn"
+              onClick={(e) => e.stopPropagation()} // prevent closing by container click
+            >
+              <h3 className="font-semibold mb-2 text-gray-800">
+                💡 How it works
+              </h3>
+              <ul className="space-y-1 text-left">
+                <li>
+                  🖱️ <b>Click & drag</b> to draw new pills.
+                </li>
+                <li>
+                  ✂️ <b>Click</b> on a pill to split it into parts.
+                </li>
+                <li>
+                  🧭 <b>Drag</b> a pill to move it around.
+                </li>
+              </ul>
+              <p className="text-xs text-gray-500 mt-3 italic">
+                Tip: Smaller splits require at least {MIN_PART}px.
+              </p>
+            </div>
+          )}
+        </div>
+      )}
       {/* Crosshair Lines */}
       <div
         className="absolute top-0 bottom-0 w-px bg-red-500 pointer-events-none z-[999999]"

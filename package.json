@@ -12,6 +12,7 @@
   "dependencies": {
     "@nanostores/react": "^1.0.0",
     "@tailwindcss/vite": "^4.1.11",
+    "lucide-react": "^0.553.0",
     "mobx": "^6.13.7",
     "mobx-react-lite": "^4.1.0",
     "nanostores": "^1.0.1",
